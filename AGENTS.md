@@ -1,59 +1,111 @@
 # AGENTS.md
 
-> 寫給 AI coding agent 看的專案手冊。人類請看 `README.md`。
-> 這份檔案來自 [claude-harness-template](https://github.com/) — 請根據你的專案實際情況替換 `<!-- replace: ... -->` 區塊。
+> 寫給 AI coding agent 的專案規則手冊。人類請看 `README.md`。
+> 違反 **HARD** 規則會直接弄壞 CI、schema 或 production — 絕對不能踩。
 
-## Project Overview <!-- replace: 改成你的專案敘述 -->
+## Tech Stack
 
-This is a `<!-- replace: e.g. Nx monorepo / Next.js app / Python service -->` running on `<!-- replace: e.g. Node.js 22 / Python 3.12 -->`.
+- **Monorepo**: Nx 22 + pnpm
+- **Backend**: NestJS 11 + GraphQL (Apollo) + TypeORM 0.3
+- **Frontend**: Next.js 16 (App Router) + React 19 + Chakra UI 3 + Apollo Client 3
+- **Database**: PostgreSQL via TypeORM
+- **Validation**: Zod (runtime) + class-validator (DTO)
+- **Runtime**: Node.js 22
 
-## Commands <!-- replace: 改成你的專案實際指令 -->
+## Commands
 
-- `<!-- replace: dev command e.g. pnpm dev -->` — start local dev server
-- `<!-- replace: build command e.g. pnpm build -->` — build for production
-- `<!-- replace: test command e.g. pnpm test -->` — run test suite
-- `<!-- replace: typecheck command e.g. pnpm typecheck -->` — type check
-- `<!-- replace: lint command e.g. pnpm lint -->` — lint
+- `pnpm server` — start NestJS GraphQL backend
+- `pnpm client` — start Next.js frontend
+- `pnpm gql` — run GraphQL codegen (mandatory after `.graphql` edits)
+- `pnpm migration:generate --name=<Name>` — generate migration from entity diff
+- `pnpm migration:run` — apply migrations
+- `pnpm migration:revert` — revert last migration
+- `pnpm nx affected:test --base=main` — run affected tests
+- `pnpm nx affected:lint --base=main` — run affected lint
 
-## Sub-agents (delegate when appropriate)
+## Sub-agents (delegate proactively)
 
-Use the `Agent` tool to delegate to these specialized sub-agents:
+Use the `Agent` tool to delegate to specialized sub-agents:
 
-- **`code-reviewer`** — read-only quality + security review after non-trivial changes
-- **`migration-writer`** — generate database migrations from entity / schema diffs
-- **`test-writer`** — write or update unit / integration tests for changed code
+| Sub-agent          | Use when                                                     |
+| :----------------- | :----------------------------------------------------------- |
+| `code-reviewer`    | After any non-trivial code change. Read-only.                |
+| `migration-writer` | Entity changed → TypeORM migration needed                    |
+| `test-writer`      | New feature or bug fix → Jest + NestJS tests                 |
+| `graphql-feature`  | New GraphQL query/mutation/subscription end-to-end           |
+| `frontend-feature` | New Next.js page or feature using Apollo + Chakra UI         |
+| `nx-lib-creator`   | New shared lib needed → `nx g @nx/js:lib` + path aliasing    |
 
-When unsure whether to delegate, prefer sub-agent for any task >5 file operations or that needs deep, focused expertise.
+Prefer sub-agent for any task >5 file operations or that needs deep, focused expertise.
+
+## Nx Rules (HARD)
+
+- All tasks via Nx: `nx run`, `nx run-many`, `nx affected`
+- NEVER invoke underlying tools directly (no `tsc`, `webpack`, `next build`)
+- Inspect repo with `nx_workspace` tool; project details with `nx_project_details`
+- Consult `nx_docs` for Nx config — do NOT guess
+
+## Architecture Rules (HARD)
+
+- TypeORM **QueryBuilder only** — do not wrap with helper abstractions
+- Class / service names must NOT contain `Manager`
+- All DTOs export via barrel `index.ts` — no deep imports (`@my-org/user/dto/create-user.dto` is forbidden)
+- Validation: `zod` for runtime, `class-validator` for DTO decorators
+
+## Entity ↔ GraphQL Rules (HARD)
+
+- **Properties typed `Relation<T>` MUST NOT have `@Field` decorator**
+- `Relation<T>` is for TypeORM only
+- GraphQL relations resolve via **field resolvers**, not entity-level decorators
+- Violating these crashes schema generation or runtime queries
+
+## Migration Rules (HARD)
+
+- Every migration must be reversible — provide both `up` and `down`
+- NEVER drop and replace a column in the same migration; use two-step migration
+- `NOT NULL` on existing table requires either default value or two-step migration
+- Index creation on large tables uses `CONCURRENTLY`
+- `schema.gql` is generated — NEVER edit by hand
+
+## Git Workflow (HARD)
+
+- Branch format: `<type>/<scope>-<kebab-description>`
+- Allowed types: `feat`, `fix`, `refactor`, `chore`, `test`, `docs`
+- No abbreviations, no camelCase / PascalCase
+- Violating branch naming will fail CI
 
 ## Boundaries
 
 ### ✅ DO
 
-- Read this file at session start
-- Use `Agent(code-reviewer)` after writing or editing any production code
-- Use `Agent(test-writer)` whenever you add a new feature or fix a bug
-- Reference files by relative path (`src/foo.ts` not `/Users/.../src/foo.ts`)
+- Use `pnpm gql` immediately after editing any `.graphql` file
+- Run `pnpm migration:generate` after editing entities
+- Create new libs via `nx g @nx/js:lib`
+- Reference files by relative path (`apps/server/src/foo.ts`)
 
 ### 🟡 ASK FIRST
 
-- Adding new dependencies (`<!-- replace: e.g. pnpm add ... -->`)
-- Modifying CI configuration in `.github/workflows/`
+- Upgrading major versions of Nx / NestJS / Next.js / TypeORM
+- Modifying `nx.json`, `tsconfig.base.json`, `codegen.yml`
+- Adding new GraphQL scalars
 - Changing files inside `.claude/` (the harness itself)
 - Any database migration that drops a column or table
 
 ### 🛑 NEVER
 
-- Edit generated files (`<!-- replace: list your generated paths, e.g. schema.gql, libs/**/.generated/ -->`)
-- Commit secrets, `.env`, or files in `<!-- replace: your secret path -->`
-- Run `git push --force` on `main` / `master`
+- Edit `schema.gql` (generated file — get overwritten on every codegen run)
+- Edit anything under `libs/**/.generated/`
+- Add `@Field` decorator to `Relation<T>` properties
+- Use `Manager` in class or service naming
+- Commit secrets, `.env`, or files in `apps/server/secrets/`
+- Run `git push --force` on `main`
 - Skip hooks with `--no-verify`
 
-## Conditional References
+## Conditional References (按需閱讀)
 
-Read these when working in the relevant area:
+- Entity / GraphQL relations → `docs/entity-graphql.md`
+- Migration workflow → `docs/migrations.md`
+- Frontend conventions (`apps/client/`) → `docs/frontend.md`
+- Architecture / module structure → `docs/architecture.md`
 
-- Architecture & module structure → `docs/architecture.md`
-- Testing conventions → `docs/testing.md`
-- Database / migration workflow → `docs/migrations.md`
-
-<!-- HARNESS_TEMPLATE_VERSION: 0.1.0 -->
+<!-- HARNESS_TEMPLATE_VERSION: 0.2.0 -->
