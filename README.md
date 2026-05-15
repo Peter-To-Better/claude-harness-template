@@ -6,7 +6,7 @@ A production-quality **Claude Code Harness** for a specific stack:
 
 This template is **not generic** — it is opinionated, pre-filled, and deliberately tied to this stack. If your stack matches, you get a working Harness in one `git clone`. If not, fork and adapt.
 
-Built incrementally alongside the [Harness Engineering 學習筆記](https://yourdomain.example/) series.
+Built incrementally alongside the [Harness Engineering 學習筆記](https://peter-to-better-blog.lanya.dev/posts/harness-engineering-%E5%AD%B8%E7%BF%92%E7%AD%86%E8%A8%98-ep-0) series.
 
 > Status: **WIP** — Ep-4 sub-agents complete (6 agents). Hooks, slash commands, and CI integration coming in Ep-5 ~ Ep-7.
 
@@ -14,7 +14,7 @@ Built incrementally alongside the [Harness Engineering 學習筆記](https://you
 
 ```bash
 # 1. Clone into your project root
-git clone https://github.com/<you>/claude-harness-template tmp-harness
+git clone https://github.com/Peter-To-Better/claude-harness-template tmp-harness
 cp -r tmp-harness/.claude  ./
 cp    tmp-harness/AGENTS.md ./
 rm -rf tmp-harness
