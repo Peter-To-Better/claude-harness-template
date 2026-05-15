@@ -1,4 +1,28 @@
-# AGENTS.md
+<!-- nx configuration start-->
+<!-- Leave the start & end comments to automatically receive updates. -->
+
+# General Guidelines for working with Nx
+
+- For navigating/exploring the workspace, invoke the `nx-workspace` skill first - it has patterns for querying projects, targets, and dependencies
+- When running tasks (for example build, lint, test, e2e, etc.), always prefer running the task through `nx` (i.e. `nx run`, `nx run-many`, `nx affected`) instead of using the underlying tooling directly
+- Prefix nx commands with the workspace's package manager (e.g., `pnpm nx build`, `npm exec nx test`) - avoids using globally installed CLI
+- You have access to the Nx MCP server and its tools, use them to help the user
+- For Nx plugin best practices, check `node_modules/@nx/<plugin>/PLUGIN.md`. Not all plugins have this file - proceed without it if unavailable.
+- NEVER guess CLI flags - always check nx_docs or `--help` first when unsure
+
+## Scaffolding & Generators
+
+- For scaffolding tasks (creating apps, libs, project structure, setup), ALWAYS invoke the `nx-generate` skill FIRST before exploring or calling MCP tools
+
+## When to use nx_docs
+
+- USE for: advanced config options, unfamiliar flags, migration guides, plugin configuration, edge cases
+- DON'T USE for: basic generator syntax (`nx g @nx/react:app`), standard commands, things you already know
+- The `nx-generate` skill handles generator discovery internally - don't call nx_docs just to look up generator syntax
+
+<!-- nx configuration end-->
+
+# claude-harness-template
 
 > 寫給 AI coding agent 的專案規則手冊。人類請看 `README.md`。
 > 違反 **HARD** 規則會直接弄壞 CI、schema 或 production — 絕對不能踩。
@@ -10,18 +34,19 @@
 - **Frontend**: Next.js 16 (App Router) + React 19 + Chakra UI 3 + Apollo Client 3
 - **Database**: PostgreSQL via TypeORM
 - **Validation**: Zod (runtime) + class-validator (DTO)
+- **Test**: Jest 30 (backend) + React Testing Library (frontend)
 - **Runtime**: Node.js 22
 
 ## Commands
 
-- `pnpm server` — start NestJS GraphQL backend
-- `pnpm client` — start Next.js frontend
-- `pnpm gql` — run GraphQL codegen (mandatory after `.graphql` edits)
-- `pnpm migration:generate --name=<Name>` — generate migration from entity diff
-- `pnpm migration:run` — apply migrations
-- `pnpm migration:revert` — revert last migration
+- `pnpm nx serve @org/server` — start NestJS GraphQL backend
+- `pnpm nx serve @org/client` — start Next.js frontend
+- `pnpm nx run-many -t build` — build all
 - `pnpm nx affected:test --base=main` — run affected tests
 - `pnpm nx affected:lint --base=main` — run affected lint
+- `pnpm nx graph` — visualize project dependencies
+
+> Database migration / GraphQL codegen commands will be added by the first `/implement` that wires up the relevant feature.
 
 ## Spec-Driven Workflow
 
@@ -50,19 +75,13 @@ Use the `Agent` tool to delegate to specialized sub-agents:
 
 Prefer sub-agent for any task >5 file operations or that needs deep, focused expertise.
 
-## Nx Rules (HARD)
-
-- All tasks via Nx: `nx run`, `nx run-many`, `nx affected`
-- NEVER invoke underlying tools directly (no `tsc`, `webpack`, `next build`)
-- Inspect repo with `nx_workspace` tool; project details with `nx_project_details`
-- Consult `nx_docs` for Nx config — do NOT guess
-
 ## Architecture Rules (HARD)
 
 - TypeORM **QueryBuilder only** — do not wrap with helper abstractions
 - Class / service names must NOT contain `Manager`
 - All DTOs export via barrel `index.ts` — no deep imports (`@my-org/user/dto/create-user.dto` is forbidden)
 - Validation: `zod` for runtime, `class-validator` for DTO decorators
+- Import alias convention: `@my-org/<lib-name>` for shared libs (see `tsconfig.base.json`)
 
 ## Entity ↔ GraphQL Rules (HARD)
 
@@ -90,22 +109,21 @@ Prefer sub-agent for any task >5 file operations or that needs deep, focused exp
 
 ### ✅ DO
 
-- Use `pnpm gql` immediately after editing any `.graphql` file
-- Run `pnpm migration:generate` after editing entities
-- Create new libs via `nx g @nx/js:lib`
+- Create new libs via `nx g @nx/js:lib` (delegate to `nx-lib-creator`)
+- Run `pnpm nx affected:test --base=main` before declaring a feature done
 - Reference files by relative path (`apps/server/src/foo.ts`)
 
 ### 🟡 ASK FIRST
 
 - Upgrading major versions of Nx / NestJS / Next.js / TypeORM
-- Modifying `nx.json`, `tsconfig.base.json`, `codegen.yml`
+- Modifying `nx.json`, `tsconfig.base.json`
 - Adding new GraphQL scalars
 - Changing files inside `.claude/` (the harness itself)
 - Any database migration that drops a column or table
 
 ### 🛑 NEVER
 
-- Edit `schema.gql` (generated file — get overwritten on every codegen run)
+- Edit `schema.gql` (generated file — will be overwritten on every codegen run)
 - Edit anything under `libs/**/.generated/`
 - Add `@Field` decorator to `Relation<T>` properties
 - Use `Manager` in class or service naming
@@ -113,11 +131,4 @@ Prefer sub-agent for any task >5 file operations or that needs deep, focused exp
 - Run `git push --force` on `main`
 - Skip hooks with `--no-verify`
 
-## Conditional References (按需閱讀)
-
-- Entity / GraphQL relations → `docs/entity-graphql.md`
-- Migration workflow → `docs/migrations.md`
-- Frontend conventions (`apps/client/`) → `docs/frontend.md`
-- Architecture / module structure → `docs/architecture.md`
-
-<!-- HARNESS_TEMPLATE_VERSION: 0.3.0 -->
+<!-- HARNESS_TEMPLATE_VERSION: 0.4.0 -->

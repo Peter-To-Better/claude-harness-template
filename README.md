@@ -1,60 +1,70 @@
 # claude-harness-template
 
-A production-quality **Claude Code Harness** for a specific stack:
+A complete **Nx monorepo starter** wired up with a production-quality **Claude Code Harness** so you can start building features with `/spec → /plan → /implement` from day one.
 
-> **Nx 22 · NestJS 11 · GraphQL (Apollo) · TypeORM 0.3 · Next.js 16 · React 19 · Chakra UI 3**
+> **Stack**: Nx 22 · NestJS 11 · GraphQL (Apollo) · TypeORM 0.3 · Next.js 16 · React 19 · Chakra UI 3
 
-This template is **not generic** — it is opinionated, pre-filled, and deliberately tied to this stack. If your stack matches, you get a working Harness in one `git clone`. If not, fork and adapt.
+This template is **opinionated and stack-specific** — not a fill-in-the-blank generic kit. If your stack matches, you get a working harness in one `git clone`. If not, fork and adapt.
 
 Built incrementally alongside the [Harness Engineering 學習筆記](https://peter-to-better-blog.lanya.dev/posts/harness-engineering-%E5%AD%B8%E7%BF%92%E7%AD%86%E8%A8%98-ep-0) series.
 
-> Status: **WIP** — Ep-5 SDD + Slash Commands complete (7 agents, 3 commands, `/spec → /plan → /implement` workflow). Skills, Hooks, and CI integration coming in Ep-6 ~ Ep-8.
+> Status: **WIP** — Ep-5 SDD + Slash Commands complete (7 sub-agents, 3 commands). Skills, Hooks, MCP, CI integration coming in Ep-6 ~ Ep-8.
 
 ## Quick start
 
 ```bash
-# 1. Clone into your project root
-git clone https://github.com/Peter-To-Better/claude-harness-template tmp-harness
-cp -r tmp-harness/.claude  ./
-cp    tmp-harness/AGENTS.md ./
-rm -rf tmp-harness
+# 1. Clone the workspace
+git clone https://github.com/Peter-To-Better/claude-harness-template my-project
+cd my-project
 
-# 2. Open AGENTS.md and adjust any project-specific details:
-#    - import path alias (currently @my-org/*)
-#    - migrations directory path
-#    - secrets directory path
+# 2. Install
+pnpm install
 
-# 3. Restart Claude Code. 7 sub-agents and 3 slash commands load on session start.
-#    Try: /spec archive-user
+# 3. Open in Claude Code (or your AI agent of choice).
+#    The 7 sub-agents + 3 slash commands load on session start.
+
+# 4. Ship your first feature using SDD
+#    /spec user-archive
+#    (answer open questions)
+#    /plan user-archive
+#    /implement user-archive
 ```
 
-## What's included
+Backend / frontend / GraphQL wiring / database integration get added by `/implement` runs — the template **does not pre-wire** those, because doing so would lock you into a specific schema. The HARD rules in `AGENTS.md` guarantee Claude Code wires them up correctly when you ask.
 
-| Path                                 | Purpose                                                         | Article |
-| :----------------------------------- | :-------------------------------------------------------------- | :------ |
-| `AGENTS.md`                          | Stack-specific HARD rules, commands, sub-agent index            | Ep-1    |
-| `.claude/agents/code-reviewer.md`    | Read-only quality + HARD-rule violation review                  | Ep-4    |
-| `.claude/agents/migration-writer.md` | TypeORM 0.3 migration generation with safety rules              | Ep-4    |
-| `.claude/agents/test-writer.md`      | Jest + NestJS Testing module + RTL test author                  | Ep-4    |
-| `.claude/agents/graphql-feature.md`  | New GraphQL feature — DTO + resolver + field resolver + codegen | Ep-4    |
-| `.claude/agents/frontend-feature.md` | New Next.js page using Apollo Client + Chakra UI                | Ep-4    |
-| `.claude/agents/nx-lib-creator.md`   | `nx g @nx/js:lib` choreography + barrel + path alias            | Ep-4    |
-| `.claude/agents/spec-writer.md`      | Drafts structured SDD spec.md (delegated by `/spec`)            | Ep-5    |
-| `.claude/commands/spec.md`           | `/spec <feature>` → produce `specs/<slug>/spec.md`              | Ep-5    |
-| `.claude/commands/plan.md`           | `/plan <slug>` → produce `plan.md` + `tasks.md`                 | Ep-5    |
-| `.claude/commands/implement.md`      | `/implement <slug>` → walk `tasks.md` top to bottom             | Ep-5    |
-| `specs/`                             | SDD artifacts (committed; one folder per feature)               | Ep-5    |
-| `.claude/skills/`                    | Skills with progressive disclosure (coming Ep-6)                | Ep-6    |
-| `.claude/settings.json`              | Team-wide hooks (coming Ep-7)                                   | Ep-7    |
-| `.github/workflows/`                 | CI integration (coming Ep-8)                                    | Ep-8    |
+## Workspace layout
 
-## Design principles
+```text
+claude-harness-template/
+├── apps/
+│   ├── server/             # NestJS 11 app (Jest 30)
+│   ├── server-e2e/         # NestJS e2e tests
+│   └── client/             # Next.js 16 App Router (React 19)
+├── libs/
+│   ├── models/             # TypeORM entities + shared types (import: @my-org/models)
+│   ├── graphql/            # GraphQL codegen output + operations (import: @my-org/graphql)
+│   └── user/               # Demo feature lib (import: @my-org/user)
+├── specs/                  # SDD artifacts — one folder per feature, committed
+├── .claude/
+│   ├── settings.json       # Nx Claude marketplace plugins
+│   ├── agents/             # 7 sub-agents (Ep-4, Ep-5)
+│   └── commands/           # 3 slash commands (Ep-5)
+├── .github/                # Nx auto-managed AI tooling (skills, CI monitor)
+├── AGENTS.md               # Project rules + sub-agent index
+└── nx.json, tsconfig.base.json, pnpm-workspace.yaml, …
+```
 
-1. **Opinionated, not generic** — pre-filled for the exact stack, no fill-in-the-blank
-2. **Everything explained, nothing magical** — every file has a "why this exists" comment
-3. **HARD vs SOFT rules separated** — HARD rules block, SOFT rules suggest
-4. **Always shippable** — `main` is always usable, no half-done work
-5. **Forking is a feature** — if your stack differs, fork freely
+## Sub-agents at a glance
+
+| Agent              | Tools        | Model  | Purpose                                       |
+| :----------------- | :----------- | :----- | :-------------------------------------------- |
+| `spec-writer`      | Read + Write | sonnet | Drafts SDD `spec.md` (called by `/spec`)      |
+| `code-reviewer`    | Read-only    | sonnet | Quality, security, HARD-rule violation review |
+| `migration-writer` | Read + Write | sonnet | TypeORM migration generation                  |
+| `test-writer`      | Read + Write | sonnet | Jest + NestJS + RTL tests                     |
+| `graphql-feature`  | Read + Write | sonnet | End-to-end GraphQL feature scaffolding        |
+| `frontend-feature` | Read + Write | sonnet | Next.js page + Apollo + Chakra                |
+| `nx-lib-creator`   | Read + Write | sonnet | New Nx library with full wiring               |
 
 ## SDD workflow at a glance
 
@@ -70,17 +80,22 @@ rm -rf tmp-harness
                           commit + branch suggestion
 ```
 
-## Sub-agents at a glance
+## Design principles
 
-| Agent              | Tools        | Model  | Purpose                                       |
-| :----------------- | :----------- | :----- | :-------------------------------------------- |
-| `spec-writer`      | Read + Write | sonnet | Drafts SDD `spec.md` (called by `/spec`)      |
-| `code-reviewer`    | Read-only    | sonnet | Quality, security, HARD-rule violation review |
-| `migration-writer` | Read + Write | sonnet | TypeORM migration generation                  |
-| `test-writer`      | Read + Write | sonnet | Jest + NestJS + RTL tests                     |
-| `graphql-feature`  | Read + Write | sonnet | End-to-end GraphQL feature scaffolding        |
-| `frontend-feature` | Read + Write | sonnet | Next.js page + Apollo + Chakra                |
-| `nx-lib-creator`   | Read + Write | sonnet | New Nx library with full wiring               |
+1. **Opinionated, stack-coupled** — pre-filled for the exact stack, no `<!-- replace -->` placeholders
+2. **Everything explained, nothing magical** — every harness file has a "why this exists" comment
+3. **HARD vs SOFT rules separated** — HARD rules block (CI, schema, production), SOFT rules suggest
+4. **Always shippable** — `main` is always usable
+5. **Forking is a feature** — if your stack differs, fork and adapt
+
+## What's NOT in the box (by design)
+
+- GraphQL / TypeORM / Apollo / Chakra `npm install` and module wiring — added by your first few `/implement` runs
+- Database container — bring your own Postgres or `/spec setup-postgres`
+- Auth / JWT — bring your own or `/spec setup-auth`
+- CI workflows — coming in Ep-8
+
+The point of a harness is that **Claude Code can extend the workspace correctly given the rules**, not that the template ships every feature pre-built.
 
 ## License
 
