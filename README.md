@@ -8,7 +8,7 @@ This template is **not generic** — it is opinionated, pre-filled, and delibera
 
 Built incrementally alongside the [Harness Engineering 學習筆記](https://peter-to-better-blog.lanya.dev/posts/harness-engineering-%E5%AD%B8%E7%BF%92%E7%AD%86%E8%A8%98-ep-0) series.
 
-> Status: **WIP** — Ep-4 sub-agents complete (6 agents). Hooks, slash commands, and CI integration coming in Ep-5 ~ Ep-7.
+> Status: **WIP** — Ep-5 SDD + Slash Commands complete (7 agents, 3 commands, `/spec → /plan → /implement` workflow). Skills, Hooks, and CI integration coming in Ep-6 ~ Ep-8.
 
 ## Quick start
 
@@ -24,7 +24,8 @@ rm -rf tmp-harness
 #    - migrations directory path
 #    - secrets directory path
 
-# 3. Restart Claude Code. The 6 sub-agents load on session start.
+# 3. Restart Claude Code. 7 sub-agents and 3 slash commands load on session start.
+#    Try: /spec archive-user
 ```
 
 ## What's included
@@ -38,9 +39,13 @@ rm -rf tmp-harness
 | `.claude/agents/graphql-feature.md`  | New GraphQL feature — DTO + resolver + field resolver + codegen | Ep-4    |
 | `.claude/agents/frontend-feature.md` | New Next.js page using Apollo Client + Chakra UI                | Ep-4    |
 | `.claude/agents/nx-lib-creator.md`   | `nx g @nx/js:lib` choreography + barrel + path alias            | Ep-4    |
-| `.claude/settings.json`              | Team-wide hooks (coming Ep-7)                                   | Ep-7    |
-| `.claude/commands/`                  | Slash commands (coming Ep-5)                                    | Ep-5    |
+| `.claude/agents/spec-writer.md`      | Drafts structured SDD spec.md (delegated by `/spec`)            | Ep-5    |
+| `.claude/commands/spec.md`           | `/spec <feature>` → produce `specs/<slug>/spec.md`              | Ep-5    |
+| `.claude/commands/plan.md`           | `/plan <slug>` → produce `plan.md` + `tasks.md`                 | Ep-5    |
+| `.claude/commands/implement.md`      | `/implement <slug>` → walk `tasks.md` top to bottom             | Ep-5    |
+| `specs/`                             | SDD artifacts (committed; one folder per feature)               | Ep-5    |
 | `.claude/skills/`                    | Skills with progressive disclosure (coming Ep-6)                | Ep-6    |
+| `.claude/settings.json`              | Team-wide hooks (coming Ep-7)                                   | Ep-7    |
 | `.github/workflows/`                 | CI integration (coming Ep-8)                                    | Ep-8    |
 
 ## Design principles
@@ -51,10 +56,25 @@ rm -rf tmp-harness
 4. **Always shippable** — `main` is always usable, no half-done work
 5. **Forking is a feature** — if your stack differs, fork freely
 
+## SDD workflow at a glance
+
+```text
+/spec <feature-name>   →  specs/<slug>/spec.md          (WHAT)
+                            ↓  (human resolves open questions)
+/plan <slug>           →  specs/<slug>/plan.md +
+                          specs/<slug>/tasks.md          (HOW)
+                            ↓
+/implement <slug>      →  walks tasks.md, delegates to
+                          sub-agents, checks boxes,
+                          runs verification, returns
+                          commit + branch suggestion
+```
+
 ## Sub-agents at a glance
 
 | Agent              | Tools        | Model  | Purpose                                       |
 | :----------------- | :----------- | :----- | :-------------------------------------------- |
+| `spec-writer`      | Read + Write | sonnet | Drafts SDD `spec.md` (called by `/spec`)      |
 | `code-reviewer`    | Read-only    | sonnet | Quality, security, HARD-rule violation review |
 | `migration-writer` | Read + Write | sonnet | TypeORM migration generation                  |
 | `test-writer`      | Read + Write | sonnet | Jest + NestJS + RTL tests                     |

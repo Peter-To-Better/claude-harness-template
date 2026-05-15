@@ -23,12 +23,24 @@
 - `pnpm nx affected:test --base=main` — run affected tests
 - `pnpm nx affected:lint --base=main` — run affected lint
 
+## Spec-Driven Workflow
+
+For any feature larger than a one-line change, follow **Spec → Plan → Implement**:
+
+1. `/spec <feature-name>` — produce `specs/<slug>/spec.md` (problem, user stories, acceptance criteria, open questions)
+2. Human resolves the open questions
+3. `/plan <slug>` — produce `specs/<slug>/plan.md` + `tasks.md` (architecture decisions, ordered task checklist)
+4. `/implement <slug>` — walk `tasks.md` top to bottom, delegating to sub-agents
+
+`specs/` is committed to git. Specs are versioned alongside code.
+
 ## Sub-agents (delegate proactively)
 
 Use the `Agent` tool to delegate to specialized sub-agents:
 
 | Sub-agent          | Use when                                                     |
 | :----------------- | :----------------------------------------------------------- |
+| `spec-writer`      | `/spec` delegates here — drafts a structured spec.md         |
 | `code-reviewer`    | After any non-trivial code change. Read-only.                |
 | `migration-writer` | Entity changed → TypeORM migration needed                    |
 | `test-writer`      | New feature or bug fix → Jest + NestJS tests                 |
@@ -108,4 +120,4 @@ Prefer sub-agent for any task >5 file operations or that needs deep, focused exp
 - Frontend conventions (`apps/client/`) → `docs/frontend.md`
 - Architecture / module structure → `docs/architecture.md`
 
-<!-- HARNESS_TEMPLATE_VERSION: 0.2.0 -->
+<!-- HARNESS_TEMPLATE_VERSION: 0.3.0 -->
