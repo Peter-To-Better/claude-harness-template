@@ -29,19 +29,19 @@ rm -rf tmp-harness
 
 ## What's included
 
-| Path                                    | Purpose                                                                | Article |
-| :-------------------------------------- | :--------------------------------------------------------------------- | :------ |
-| `AGENTS.md`                             | Stack-specific HARD rules, commands, sub-agent index                   | Ep-1    |
-| `.claude/agents/code-reviewer.md`       | Read-only quality + HARD-rule violation review                         | Ep-4    |
-| `.claude/agents/migration-writer.md`    | TypeORM 0.3 migration generation with safety rules                     | Ep-4    |
-| `.claude/agents/test-writer.md`         | Jest + NestJS Testing module + RTL test author                         | Ep-4    |
-| `.claude/agents/graphql-feature.md`     | New GraphQL feature — DTO + resolver + field resolver + codegen        | Ep-4    |
-| `.claude/agents/frontend-feature.md`    | New Next.js page using Apollo Client + Chakra UI                       | Ep-4    |
-| `.claude/agents/nx-lib-creator.md`      | `nx g @nx/js:lib` choreography + barrel + path alias                   | Ep-4    |
-| `.claude/settings.json`                 | Team-wide hooks (coming Ep-7)                                          | Ep-7    |
-| `.claude/commands/`                     | Slash commands (coming Ep-5)                                           | Ep-5    |
-| `.claude/skills/`                       | Skills with progressive disclosure (coming Ep-6)                       | Ep-6    |
-| `.github/workflows/`                    | CI integration (coming Ep-8)                                           | Ep-8    |
+| Path                                 | Purpose                                                         | Article |
+| :----------------------------------- | :-------------------------------------------------------------- | :------ |
+| `AGENTS.md`                          | Stack-specific HARD rules, commands, sub-agent index            | Ep-1    |
+| `.claude/agents/code-reviewer.md`    | Read-only quality + HARD-rule violation review                  | Ep-4    |
+| `.claude/agents/migration-writer.md` | TypeORM 0.3 migration generation with safety rules              | Ep-4    |
+| `.claude/agents/test-writer.md`      | Jest + NestJS Testing module + RTL test author                  | Ep-4    |
+| `.claude/agents/graphql-feature.md`  | New GraphQL feature — DTO + resolver + field resolver + codegen | Ep-4    |
+| `.claude/agents/frontend-feature.md` | New Next.js page using Apollo Client + Chakra UI                | Ep-4    |
+| `.claude/agents/nx-lib-creator.md`   | `nx g @nx/js:lib` choreography + barrel + path alias            | Ep-4    |
+| `.claude/settings.json`              | Team-wide hooks (coming Ep-7)                                   | Ep-7    |
+| `.claude/commands/`                  | Slash commands (coming Ep-5)                                    | Ep-5    |
+| `.claude/skills/`                    | Skills with progressive disclosure (coming Ep-6)                | Ep-6    |
+| `.github/workflows/`                 | CI integration (coming Ep-8)                                    | Ep-8    |
 
 ## Design principles
 
@@ -53,14 +53,14 @@ rm -rf tmp-harness
 
 ## Sub-agents at a glance
 
-| Agent              | Tools        | Model  | Purpose                                            |
-| :----------------- | :----------- | :----- | :------------------------------------------------- |
-| `code-reviewer`    | Read-only    | sonnet | Quality, security, HARD-rule violation review      |
-| `migration-writer` | Read + Write | sonnet | TypeORM migration generation                       |
-| `test-writer`      | Read + Write | sonnet | Jest + NestJS + RTL tests                          |
-| `graphql-feature`  | Read + Write | sonnet | End-to-end GraphQL feature scaffolding             |
-| `frontend-feature` | Read + Write | sonnet | Next.js page + Apollo + Chakra                     |
-| `nx-lib-creator`   | Read + Write | sonnet | New Nx library with full wiring                    |
+| Agent              | Tools        | Model  | Purpose                                       |
+| :----------------- | :----------- | :----- | :-------------------------------------------- |
+| `code-reviewer`    | Read-only    | sonnet | Quality, security, HARD-rule violation review |
+| `migration-writer` | Read + Write | sonnet | TypeORM migration generation                  |
+| `test-writer`      | Read + Write | sonnet | Jest + NestJS + RTL tests                     |
+| `graphql-feature`  | Read + Write | sonnet | End-to-end GraphQL feature scaffolding        |
+| `frontend-feature` | Read + Write | sonnet | Next.js page + Apollo + Chakra                |
+| `nx-lib-creator`   | Read + Write | sonnet | New Nx library with full wiring               |
 
 ## License
 
