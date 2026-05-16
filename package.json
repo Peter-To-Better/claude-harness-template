@@ -2,7 +2,20 @@
   "name": "@org/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "server": "nx serve @org/server",
+    "server:build": "nx build @org/server",
+    "server:test": "nx test @org/server",
+    "client": "nx dev @org/client",
+    "client:build": "nx build @org/client",
+    "client:start": "nx start @org/client",
+    "build": "nx run-many -t build",
+    "test": "nx affected -t test --base=main",
+    "lint": "nx affected -t lint --base=main",
+    "typecheck": "nx affected -t typecheck --base=main",
+    "graph": "nx graph",
+    "nx": "nx"
+  },
   "private": true,
   "devDependencies": {
     "@eslint/js": "^9.8.0",

@@ -39,12 +39,15 @@
 
 ## Commands
 
-- `pnpm nx serve @org/server` — start NestJS GraphQL backend
-- `pnpm nx serve @org/client` — start Next.js frontend
-- `pnpm nx run-many -t build` — build all
-- `pnpm nx affected:test --base=main` — run affected tests
-- `pnpm nx affected:lint --base=main` — run affected lint
-- `pnpm nx graph` — visualize project dependencies
+- `pnpm server` — start NestJS GraphQL backend (`nx serve @org/server`)
+- `pnpm client` — start Next.js frontend (`nx dev @org/client`)
+- `pnpm build` — build all (`nx run-many -t build`)
+- `pnpm test` — run affected tests (`nx affected -t test --base=main`)
+- `pnpm lint` — run affected lint (`nx affected -t lint --base=main`)
+- `pnpm typecheck` — run affected typecheck
+- `pnpm graph` — visualize project dependencies
+
+> Use these shortcuts. If you need to invoke a different Nx target directly, prefix with `pnpm nx ...`. Never use globally-installed `nx`.
 
 > Database migration / GraphQL codegen commands will be added by the first `/implement` that wires up the relevant feature.
 
