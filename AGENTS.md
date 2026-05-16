@@ -39,8 +39,8 @@
 
 ## Commands
 
-- `pnpm server` — start NestJS GraphQL backend (`nx serve @org/server`)
-- `pnpm client` — start Next.js frontend (`nx dev @org/client`)
+- `pnpm server` — start NestJS GraphQL backend on **port 4000** (`nx serve @org/server`)
+- `pnpm client` — start Next.js frontend on **port 4500** (`nx dev @org/client --port=4500`)
 - `pnpm build` — build all (`nx run-many -t build`)
 - `pnpm test` — run affected tests (`nx affected -t test --base=main`)
 - `pnpm lint` — run affected lint (`nx affected -t lint --base=main`)

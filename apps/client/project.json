@@ -1,0 +1,15 @@
+{
+  "name": "@org/client",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/client/src",
+  "projectType": "application",
+  "tags": [],
+  "targets": {
+    "dev": {
+      "command": "next dev --port=4500",
+      "options": {
+        "cwd": "apps/client"
+      }
+    }
+  }
+}
