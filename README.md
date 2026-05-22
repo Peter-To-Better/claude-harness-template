@@ -8,7 +8,7 @@ This template is **opinionated and stack-specific** — not a fill-in-the-blank 
 
 Built incrementally alongside the [Harness Engineering 學習筆記](https://peter-to-better-blog.lanya.dev/posts/harness-engineering-%E5%AD%B8%E7%BF%92%E7%AD%86%E8%A8%98-ep-0) series.
 
-> Status: **WIP** — Ep-5 SDD + Slash Commands complete (7 sub-agents, 3 commands). Skills, Hooks, MCP, CI integration coming in Ep-6 ~ Ep-8.
+> Status: **WIP** — Ep-6 Skills complete (8 sub-agents, 3 commands, 1 skill). Hooks, MCP, CI integration coming in Ep-7 ~ Ep-8.
 
 ## Quick start
 
@@ -21,7 +21,7 @@ cd my-project
 pnpm install
 
 # 3. Open in Claude Code (or your AI agent of choice).
-#    The 7 sub-agents + 3 slash commands load on session start.
+#    The 8 sub-agents + 3 slash commands + skills load on session start.
 
 # 4. Ship your first feature using SDD
 #    /spec user-archive
@@ -47,8 +47,9 @@ claude-harness-template/
 ├── specs/                  # SDD artifacts — one folder per feature, committed
 ├── .claude/
 │   ├── settings.json       # Nx Claude marketplace plugins
-│   ├── agents/             # 7 sub-agents (Ep-4, Ep-5)
-│   └── commands/           # 3 slash commands (Ep-5)
+│   ├── agents/             # 8 sub-agents (Ep-4, Ep-5, Ep-6)
+│   ├── commands/           # 3 slash commands (Ep-5)
+│   └── skills/             # Reusable knowledge modules (Ep-6)
 ├── .github/                # Nx auto-managed AI tooling (skills, CI monitor)
 ├── AGENTS.md               # Project rules + sub-agent index
 └── nx.json, tsconfig.base.json, pnpm-workspace.yaml, …
@@ -65,6 +66,7 @@ claude-harness-template/
 | `graphql-feature`  | Read + Write | sonnet | End-to-end GraphQL feature scaffolding        |
 | `frontend-feature` | Read + Write | sonnet | Next.js page + Apollo + Chakra                |
 | `nx-lib-creator`   | Read + Write | sonnet | New Nx library with full wiring               |
+| `dep-auditor`      | Read-only    | sonnet | CVE audit; preloads the `cve-triage` skill    |
 
 ## SDD workflow at a glance
 

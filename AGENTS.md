@@ -75,8 +75,17 @@ Use the `Agent` tool to delegate to specialized sub-agents:
 | `graphql-feature`  | New GraphQL query/mutation/subscription end-to-end           |
 | `frontend-feature` | New Next.js page or feature using Apollo + Chakra UI         |
 | `nx-lib-creator`   | New shared lib needed → `nx g @nx/js:lib` + path aliasing    |
+| `dep-auditor`      | Audit dependencies for CVEs; preloads the `cve-triage` skill |
 
 Prefer sub-agent for any task >5 file operations or that needs deep, focused expertise.
+
+## Skills
+
+Reusable knowledge modules in `.claude/skills/`. Loaded on demand (or preloaded into a sub-agent):
+
+| Skill        | Provides                                                          |
+| :----------- | :---------------------------------------------------------------- |
+| `cve-triage` | CVSS bands, GHSA vs CVE, upgrade-vs-override criteria, false positives |
 
 ## Architecture Rules (HARD)
 
@@ -134,4 +143,4 @@ Prefer sub-agent for any task >5 file operations or that needs deep, focused exp
 - Run `git push --force` on `main`
 - Skip hooks with `--no-verify`
 
-<!-- HARNESS_TEMPLATE_VERSION: 0.4.0 -->
+<!-- HARNESS_TEMPLATE_VERSION: 0.5.0 -->
