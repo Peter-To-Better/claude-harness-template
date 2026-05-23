@@ -8,7 +8,7 @@ This template is **opinionated and stack-specific** — not a fill-in-the-blank 
 
 Built incrementally alongside the [Harness Engineering 學習筆記](https://peter-to-better-blog.lanya.dev/posts/harness-engineering-%E5%AD%B8%E7%BF%92%E7%AD%86%E8%A8%98-ep-0) series.
 
-> Status: **WIP** — Ep-6 Skills complete (8 sub-agents, 3 commands, 1 skill). Hooks, MCP, CI integration coming in Ep-7 ~ Ep-8.
+> Status: **WIP** — Ep-7 Hooks + MCP complete (8 sub-agents, 3 commands, 1 skill, 2 hooks, MCP examples). CI integration coming in Ep-8.
 
 ## Quick start
 
@@ -46,10 +46,12 @@ claude-harness-template/
 │   └── user/               # Demo feature lib (import: @my-org/user)
 ├── specs/                  # SDD artifacts — one folder per feature, committed
 ├── .claude/
-│   ├── settings.json       # Nx Claude marketplace plugins
+│   ├── settings.json       # Nx marketplace + PreToolUse hooks (Ep-7)
 │   ├── agents/             # 8 sub-agents (Ep-4, Ep-5, Ep-6)
 │   ├── commands/           # 3 slash commands (Ep-5)
-│   └── skills/             # Reusable knowledge modules (Ep-6)
+│   ├── skills/             # Reusable knowledge modules (Ep-6)
+│   └── scripts/            # Hook handler scripts (Ep-7)
+├── .mcp.json               # Project-scope MCP server examples (Ep-7)
 ├── .github/                # Nx auto-managed AI tooling (skills, CI monitor)
 ├── AGENTS.md               # Project rules + sub-agent index
 └── nx.json, tsconfig.base.json, pnpm-workspace.yaml, …

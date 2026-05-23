@@ -1,0 +1,22 @@
+{
+  "_comment": "Project-scope MCP servers. Checked into git, shared with team. Claude Code prompts for approval the first time it sees a new server here. Add credentials via env vars (NEVER commit secrets).",
+  "_docs": "https://code.claude.com/docs/en/mcp",
+
+  "mcpServers": {
+    "_postgres_example": {
+      "_comment": "EXAMPLE — uncomment + remove the leading underscore to enable. Read-only Postgres access for migration-writer + graphql-feature sub-agents to inspect live schema. Requires DATABASE_URL env var.",
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@bytebase/dbhub", "--dsn", "${DATABASE_URL}"]
+    },
+
+    "_github_example": {
+      "_comment": "EXAMPLE — uncomment + remove the leading underscore to enable. GitHub API access for code-reviewer to read PR context, dep-auditor to check published advisories. Requires GITHUB_PAT env var.",
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/",
+      "headers": {
+        "Authorization": "Bearer ${GITHUB_PAT}"
+      }
+    }
+  }
+}

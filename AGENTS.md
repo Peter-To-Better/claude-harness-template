@@ -87,6 +87,30 @@ Reusable knowledge modules in `.claude/skills/`. Loaded on demand (or preloaded 
 | :----------- | :---------------------------------------------------------------- |
 | `cve-triage` | CVSS bands, GHSA vs CVE, upgrade-vs-override criteria, false positives |
 
+## Hooks (deterministic guardrails)
+
+`.claude/settings.json` registers PreToolUse hooks that BLOCK certain actions outright (exit code 2):
+
+| Hook                          | What it blocks                                              |
+| :---------------------------- | :---------------------------------------------------------- |
+| `block-generated.js`          | Edits to `schema.gql`, `libs/**/.generated/`, `*.generated.*` |
+| `guard-bash.js`               | `rm -rf /`, `DROP TABLE`, `git push --force`, `--no-verify`, `migration:revert` on `main` |
+
+These are HARD constraints — not advisories. Agents cannot bypass them.
+
+To extend, edit `.claude/scripts/*.js` (the JS files document why each pattern is blocked).
+
+## MCP servers
+
+`.mcp.json` at repo root lists project-scope MCP servers (commit to git, shared with team). Each example is commented-out by default — uncomment and supply env vars to enable:
+
+| Server     | Use case                                                            |
+| :--------- | :------------------------------------------------------------------ |
+| `postgres` | Live DB schema lookup for `migration-writer` / `graphql-feature`    |
+| `github`   | PR / issue context for `code-reviewer` / `dep-auditor`              |
+
+Per-user / cross-project MCP servers go via `claude mcp add --scope user`, not into `.mcp.json`.
+
 ## Architecture Rules (HARD)
 
 - TypeORM **QueryBuilder only** — do not wrap with helper abstractions
@@ -143,4 +167,4 @@ Reusable knowledge modules in `.claude/skills/`. Loaded on demand (or preloaded 
 - Run `git push --force` on `main`
 - Skip hooks with `--no-verify`
 
-<!-- HARNESS_TEMPLATE_VERSION: 0.5.0 -->
+<!-- HARNESS_TEMPLATE_VERSION: 0.6.0 -->
